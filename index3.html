@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Collection of favorite music videos organized by genre">
+    <title>Music Video Collection</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Tailwind via CDN (consider installing locally for production) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Custom styles */
+        .folder-button {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .folder-content {
+            transition: max-height 0.3s ease-in-out;
+            overflow: hidden;
+            max-height: 0;
+        }
+        
+        .folder-content.open {
+            max-height: 2000px; /* Adjust based on content */
+        }
+        
+        .arrow {
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .arrow.open {
+            transform: rotate(180deg);
+        }
+        
+        .video-container {
+            aspect-ratio: 16 / 9;
+        }
+        
+        /* Focus styles for accessibility */
+        button:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-start justify-center py-8 px-4">
+    <div class="max-w-4xl w-full">
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">My Favorite Music Videos</h1>
+            <p class="text-gray-600">Browse my collection of music videos organized by genre</p>
+        </header>
+        
+        <div id="music-folders" class="space-y-2"></div>
+        
+        <footer class="mt-12 text-center text-sm text-gray-500">
+            <p>Last updated: August 2023 | Video collection curated with ❤️</p>
+        </footer>
+    </div>
+
+    <script>
+        // Music data organized by genre
+        const musicData = [
+            {
+                category: "Rock",
+                videos: [
+                    { 
+                        title: "Queen - Bohemian Rhapsody", 
+                        url: "https://www.youtube.com/embed/_FrOQC-zEog",
+                        year: 1975
+                    },
+                    { 
+                        title: "Led Zeppelin - Stairway to Heaven", 
+                        url: "https://www.youtube.com/embed/QkF3oxziq-A",
+                        year: 1971
+                    },
+                    { 
+                        title: "Nirvana - Smells Like Teen Spirit", 
+                        url: "https://www.youtube.com/embed/hTWKbfoikeg",
+                        year: 1991
+                    },
+                ]
+            },
+            {
+                category: "Pop",
+                videos: [
+                    { 
+                        title: "Michael Jackson - Thriller", 
+                        url: "https://www.youtube.com/embed/sZIgUc9oo7w",
+                        year: 1983
+                    },
+                    { 
+                        title: "Madonna - Like a Prayer", 
+                        url: "https://www.youtube.com/embed/79fzeNUccfg",
+                        year: 1989
+                    },
+                    { 
+                        title: "Taylor Swift - Shake It Off", 
+                        url: "https://www.youtube.com/embed/d73tiBBzvFM",
+                        year: 2014
+                    },
+                ]
+            },
+            {
+                category: "Hip Hop",
+                videos: [
+                    { 
+                        title: "The Notorious B.I.G. - Juicy", 
+                        url: "https://www.youtube.com/embed/hyNcKzhol7Y",
+                        year: 1994
+                    },
+                    { 
+                        title: "Missy Elliott - Get Ur Freak On", 
+                        url: "https://www.youtube.com/embed/WLx5E8b-p8E",
+                        year: 2001
+                    },
+                    { 
+                        title: "Kanye West - Stronger", 
+                        url: "https://www.youtube.com/embed/K8e1kxYQk0Y",
+                        year: 2007
+                    },
+                ]
+            },
+            {
+                category: "Classical",
+                videos: [
+                    { 
+                        title: "Beethoven - Für Elise", 
+                        url: "https://www.youtube.com/embed/Rb0UmrCXxVA",
+                        year: 1867
+                    },
+                    { 
+                        title: "Mozart - Lacrimosa", 
+                        url: "https://www.youtube.com/embed/k1-TrAvuP_8",
+                        year: 1791
+                    },
+                    { 
+                        title: "Vivaldi - Four Seasons", 
+                        url: "https://www.youtube.com/embed/GRxofPeUv8U",
+                        year: 1723
+                    },
+                ]
+            },
+            {
+                category: "Jazz",
+                videos: [
+                    { 
+                        title: "Louis Armstrong - What a Wonderful World", 
+                        url: "https://www.youtube.com/embed/Vqh5oWj2KZA",
+                        year: 1967
+                    },
+                    { 
+                        title: "Ella Fitzgerald - Fly Me to the Moon", 
+                        url: "https://www.youtube.com/embed/79fzeNUccfg",
+                        year: 1964
+                    },
+                    { 
+                        title: "Miles Davis - So What", 
+                        url: "https://www.youtube.com/embed/DEC8nqT6Rlo",
+                        year: 1959
+                    },
+                ]
+            }
+        ];
+
+        // DOM elements
+        const musicFoldersDiv = document.getElementById('music-folders');
+
+        // Create folder elements for each category
+        musicData.forEach(categoryData => {
+            const folderWrapper = document.createElement('div');
+            folderWrapper.className = 'bg-white rounded-lg shadow-sm overflow-hidden';
+            
+            // Create folder button
+            const folderButton = document.createElement('button');
+            folderButton.className = 'folder-button w-full flex items-center justify-between p-4 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium text-left';
+            folderButton.setAttribute('aria-expanded', 'false');
+            folderButton.setAttribute('aria-controls', `folder-${categoryData.category.toLowerCase()}`);
+            
+            const buttonText = document.createElement('span');
+            buttonText.className = 'flex items-center';
+            
+            const folderIcon = document.createElement('svg');
+            folderIcon.className = 'w-5 h-5 mr-3 text-gray-500';
+            folderIcon.fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor";
+            folderIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />';
+            
+            buttonText.appendChild(folderIcon);
+            buttonText.appendChild(document.createTextNode(categoryData.category));
+            
+            const videoCount = document.createElement('span');
+            videoCount.className = 'ml-2 px-2 py-1 text-xs bg-gray-300 text-gray-700 rounded-full';
+            videoCount.textContent = `${categoryData.videos.length} videos`;
+            
+            buttonText.appendChild(videoCount);
+            folderButton.appendChild(buttonText);
+            
+            const arrow = document.createElement('svg');
+            arrow.className = 'arrow w-5 h-5 text-gray-600 transform transition-transform';
+            arrow.fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor";
+            arrow.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />';
+            folderButton.appendChild(arrow);
+            
+            // Create folder content
+            const folderContent = document.createElement('div');
+            folderContent.className = 'folder-content';
+            folderContent.id = `folder-${categoryData.category.toLowerCase()}`;
+            
+            const videosContainer = document.createElement('div');
+            videosContainer.className = 'p-4 space-y-4';
+            
+            // Add videos to the folder
+            categoryData.videos.forEach(video => {
+                const videoCard = document.createElement('div');
+                videoCard.className = 'video-card bg-gray-50 rounded-lg overflow-hidden border border-gray-200';
+                
+                const videoContainer = document.createElement('div');
+                videoContainer.className = 'video-container w-full';
+                
+                const iframe = document.createElement('iframe');
+                iframe.className = 'w-full h-full';
+                iframe.src = video.url.replace('watch?v=', 'embed/');
+                iframe.title = video.title;
+                iframe.loading = 'lazy';
+                iframe.frameBorder = '0';
+                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                iframe.allowFullscreen = true;
+                
+                const videoInfo = document.createElement('div');
+                videoInfo.className = 'p-3';
+                
+                const videoTitle = document.createElement('h3');
+                videoTitle.className = 'font-medium text-gray-900';
+                videoTitle.textContent = video.title;
+                
+                const videoYear = document.createElement('p');
+                videoYear.className = 'text-sm text-gray-500';
+                videoYear.textContent = `Released: ${video.year}`;
+                
+                videoInfo.appendChild(videoTitle);
+                videoInfo.appendChild(videoYear);
+                videoContainer.appendChild(iframe);
+                videoCard.appendChild(videoContainer);
+                videoCard.appendChild(videoInfo);
+                videosContainer.appendChild(videoCard);
+            });
+            
+            folderContent.appendChild(videosContainer);
+            folderWrapper.appendChild(folderButton);
+            folderWrapper.appendChild(folderContent);
+            musicFoldersDiv.appendChild(folderWrapper);
+            
+            // Toggle folder on click
+            folderButton.addEventListener('click', () => {
+                const isExpanded = folderButton.getAttribute('aria-expanded') === 'true';
+                folderButton.setAttribute('aria-expanded', !isExpanded);
+                folderContent.classList.toggle('open');
+                arrow.classList.toggle('open');
+                
+                // Close other open folders (optional)
+                // document.querySelectorAll('.folder-button[aria-expanded="true"]').forEach(btn => {
+                //     if (btn !== folderButton) {
+                //         btn.setAttribute('aria-expanded', 'false');
+                //         btn.nextElementSibling.classList.remove('open');
+                //         btn.querySelector('.arrow').classList.remove('open');
+                //     }
+                // });
+            });
+        });
+        
+        // Lazy load videos when they come into view
+        const lazyLoadVideos = () => {
+            const videoContainers = document.querySelectorAll('.video-container');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const iframe = entry.target.querySelector('iframe');
+                        if (iframe && !iframe.src.includes('autoplay=1')) {
+                            iframe.src = iframe.src + '?autoplay=0&mute=1';
+                        }
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { rootMargin: '100px' });
+            
+            videoContainers.forEach(container => {
+                observer.observe(container);
+            });
+        };
+        
+        // Initialize lazy loading
+        document.addEventListener('DOMContentLoaded', lazyLoadVideos);
+    </script>
+</body>
+</html>
